@@ -12,8 +12,6 @@ damage = 15
 Points=100
 canleave=False
 ammo = 180
-
-	
 boxspawn=True
 PlayerStats = [PlayerHealth, armour, speed, ammo, Points]
 boxchance = 1
@@ -435,13 +433,28 @@ def Battle(MonsterHealth,monsmin, monsmax,Points,PlayerHealth):
 
 	print("-------------A foe Approaches!------------------")
 	input("Press any key to begin battle!")
-	while MonsterHealth > 0 and PlayerHealth > 0:
+	while MonsterHealth > 0 or PlayerHealth > 0 or SoldierHealth>0 or OfficerHealth>0 or AvagadroHealth>0:
 		#monster turn 
 		Monsterattack = random.randrange(monsmin,monsmax)
 		print(" The enemy hits you for" , Monsterattack, "damage!")
-		PlayerHealth -= Monsterattackk
+		PlayerHealth -= Monsterattack
 		PlayerStats[1]-=20
 		print(PlayerHealth)
+
+		if SoldierHealth<=0:
+			print("You defeated a hostile soldier")
+			Points+=25
+
+		if OfficerHealth<=0:
+			print("You defeated an officer")
+			Points+=50
+
+		if AvagadroHealth<=0:
+			print("You somehow defeated an Avagadro")
+			Points+=100
+
+		if PlayerHealth<=0:
+			print("Misson failed, we'll get em next time! ")
 		#players turn 
 		print("selcet the weapon you would like to use for this fight")
 		print(inventory)
@@ -450,41 +463,49 @@ def Battle(MonsterHealth,monsmin, monsmax,Points,PlayerHealth):
 			attack=15
 			speed+=10
 			MonsterHealth-=15
+			SoldierHealth-=15
+			OfficerHealth-=15
+			AvagadroHealth-=15
+
 		elif choice==("smg"):
 			attack=30
 			speed+=6
 			MonsterHealth-=30
+			SoldierHealth-=30
+			OfficerHealth-=30
+			AvagadroHealth-=30
 
 		elif choice==("knife"):
 			attack=100
 			MonsterHealth-=100
 			PlayerStats[1]+=30
+			SoldierHealth-=100
+			OfficerHealth-=100
+			AvagadroHealth-=100
 
 		elif choice==("ray gun"):
 			attack=150
 			speed+=10
 			MonsterHealth-=150
+			SoldierHealth-=150
+			OfficerHealth-=150
+			AvagadroHealth-=150
 
 		elif choice==("shatterstar"):
 			attack=250
 			speed+=20
 			MonsterHealth-=250
-
+			SoldierHealth-=250
+			OfficerHealth-=250
+			AvagadroHealth-=250
 		elif choice==("grenade"):
 			attack=200
 			MonsterHealth-=200
-
-		if PlayerHealth<=0:
-			print("Misson failed, we'll get em next time! ")
-		if SoldierHealth<=0:
-			print("You defeated a hostile soldier")
-			Points+=25
-		if OfficerHealth<=0:
-			print("You defeated an officer")
-			Points+=50
-		if AvagadroHealth<=0:
-			print("You somehow defeated an Avagadro")
-			Points+=100
+			SoldierHealth-=200
+			OfficerHealth-=200
+			AvagadroHealth-=200
+		
+	
 #attack = random.randrange(0,1)
 		print(" You hit the enemy for" , attack, "damage!")
 		MonsterHealth -= attack
@@ -654,7 +675,7 @@ while choice != "quit" and PlayerHealth > 0:
 			print("I do not understand that " )
 	#Room 2 ( The Vehicle bay) 
 	elif room == 2:
-		PlayerHealth = MonsterGen(Points)
+		PlayerHealth = monsterGen(Points)
 		choice = input("You are in The vehicle bay. The sounds of engines ideling and the smell of oil flood you senses, You can go east, south, or west .")
 		if boxchance == room:
 			print("You found the mystery Box")
