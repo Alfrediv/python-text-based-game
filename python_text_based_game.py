@@ -3,9 +3,8 @@ import winsound
 import time
 import os
 #playsound('annoying sound.wav')
-
-PlayerHealth = 100
-armour = 100
+PlayerHealth = 0
+armour = 1
 speed = 0 
 strength = 0 
 damage = 15
@@ -13,14 +12,16 @@ Points=100
 canleave=False
 ammo = 180
 boxspawn=True
-PlayerStats = [PlayerHealth, armour, speed, ammo, Points]
+PlayerStats = [100, 100, 0, 180, 100]
 boxchance = 1
 wonderweapon=False
 wonderweapon =("ray gun" or "shatterstar")
-FinalBossHealth=1,000
-SoldierHealth=100
-OfficerHealth=150
-AvagadroHealth=200
+HostileStats = [1000,100,150,200]
+FinalBossN = 0
+SoldierN = 1
+OfficerN = 2
+AvagadroN = 3
+
 
 
 
@@ -401,10 +402,10 @@ def Finalboss ():
 		programPause=input("Press the enter key to continue")
 		print(" This is dispach, I recommend using that wonderweapon you have ")
 		print (inventory)
-		while FinalBossHealth>0 or PlayerHealth >0:
+		while FinalBossHealth>0 or PlayerStats[PlayerHealth] >0:
 			PlayeHealth2 -= 40
 		print(" The enemy hits you for" , attack, "damage!")
-		PlayerHealth -= attack
+		PlayerStats[PlayerHealth] -= attack
 		if search_item(inventory, "Ray gun"):
 			attack = 150
 		elif search_item(inventory, "Shatter star"):
@@ -423,7 +424,7 @@ def Finalboss ():
 		
 		else:
 			attack+=0 (FinalBossHealth)
-		if FinalBossHealth>=500 or PlayerHealth>=50:
+		if FinalBossHealth>=500 or PlayerStats[PlayerHealth]>=50:
 			print("I see you picked the hard way!")
 
 		if FinalBossHealth<=0:
@@ -433,87 +434,73 @@ def Battle(MonsterHealth,monsmin, monsmax,Points,PlayerHealth):
 
 	print("-------------A foe Approaches!------------------")
 	input("Press any key to begin battle!")
-	while MonsterHealth > 0 or PlayerHealth > 0 or SoldierHealth>0 or OfficerHealth>0 or AvagadroHealth>0:
+	while MonsterHealth > 0 or PlayerStats[PlayerHealth] > 0:
 		#monster turn 
 		Monsterattack = random.randrange(monsmin,monsmax)
 		print(" The enemy hits you for" , Monsterattack, "damage!")
-		PlayerHealth -= Monsterattack
+		PlayerStats[PlayerHealth] -= Monsterattack
 		PlayerStats[1]-=20
-		print(PlayerHealth)
+		print(PlayerStats[PlayerHealth])
 
-		if SoldierHealth<=0:
-			print("You defeated a hostile soldier")
-			Points+=25
+		#if HostileStats[SoldierN]<=0:
+		#	print("You defeated a hostile soldier")
+		#	Points+=25
 
-		if OfficerHealth<=0:
-			print("You defeated an officer")
-			Points+=50
+		#elif HostileStats[OfficerN]<=0:
+		#	print("You defeated an officer")
+		#	Points+=50
 
-		if AvagadroHealth<=0:
-			print("You somehow defeated an Avagadro")
-			Points+=100
+		#elif HostileStats[AvagadroN]<=0:
+		#	print("You somehow defeated an Avagadro")
+		#	Points+=100
 
-		if PlayerHealth<=0:
+		if PlayerStats[PlayerHealth]<=0:
 			print("Misson failed, we'll get em next time! ")
+		if MonsterHealth <=0:
+			print("monster dead")
 		#players turn 
 		print("selcet the weapon you would like to use for this fight")
 		print(inventory)
 		choice=input()
 		if choice==("pistol"):
-			attack=15
-			speed+=10
+
 			MonsterHealth-=15
-			SoldierHealth-=15
-			OfficerHealth-=15
-			AvagadroHealth-=15
+	
 
 		elif choice==("smg"):
-			attack=30
-			speed+=6
+
 			MonsterHealth-=30
-			SoldierHealth-=30
-			OfficerHealth-=30
-			AvagadroHealth-=30
+
 
 		elif choice==("knife"):
-			attack=100
+
 			MonsterHealth-=100
 			PlayerStats[1]+=30
-			SoldierHealth-=100
-			OfficerHealth-=100
-			AvagadroHealth-=100
+
 
 		elif choice==("ray gun"):
-			attack=150
-			speed+=10
+
 			MonsterHealth-=150
-			SoldierHealth-=150
-			OfficerHealth-=150
-			AvagadroHealth-=150
+
 
 		elif choice==("shatterstar"):
-			attack=250
-			speed+=20
+
 			MonsterHealth-=250
-			SoldierHealth-=250
-			OfficerHealth-=250
-			AvagadroHealth-=250
+
 		elif choice==("grenade"):
-			attack=200
+
 			MonsterHealth-=200
-			SoldierHealth-=200
-			OfficerHealth-=200
-			AvagadroHealth-=200
+
 		
 	
 #attack = random.randrange(0,1)
-		print(" You hit the enemy for" , attack, "damage!")
+		print(" You hit the enemy for", attack,"damage!")
 		MonsterHealth -= attack
 		print("MonsterHealth:",MonsterHealth)
-		print("PlayerHealth:", PlayerHealth)
+		print("PlayerStats[PlayerHealth]:", PlayerStats[PlayerHealth])
 		print()
 		input("Press any button to continue")
-		PlayerHealth = PlayerHealth
+		PlayerStats[PlayerHealth] = PlayerStats[PlayerHealth]
 		#use items
 		choice == input (" What item do you want to use? ")
 		if choice in inventory:
@@ -523,11 +510,11 @@ def Battle(MonsterHealth,monsmin, monsmax,Points,PlayerHealth):
 				inventory.remove("ammo")
 			elif choice == "medkit":
 				print('you have used a medkit, you are back to full health')
-				PlayerHealth += 100
+				PlayerStats[PlayerHealth] += 100
 				inventory.remove("medkit")
 			elif choice=="rations":
 				print("You have used some rations. This restored some health")
-				PlayerHealth+=25
+				PlayerStats[PlayerHealth]+=25
 				inventory.remove(rations)
 			else:
 				print("sorry bud, you dont have this item")
@@ -600,14 +587,14 @@ def monsterGen(Points):
 	num = random.randrange(0, 100)
 	if num < 20:#20% chance 
 		print("a Ememy Soilder has spotted you! ")
-		Battle(30, 0, 100, Points,PlayerHealth)
+		Battle(HostileStats[SoldierN], 0, 100, Points,PlayerStats[PlayerHealth])
 	elif num < 50:#30% chance 
 		print(" a Hostile officer has found you!")
-		Battle(150, 0, 100, Points, PlayerHealth)
+		Battle(HostileStats[OfficerN], 0, 100, Points, PlayerStats[PlayerHealth])
 
 	elif num < 52:#10% chance 
 		print("an avagadro has come for you! ")
-		Battle(200, 0, 100, Points, PlayerHealth)
+		Battle(HostileStats[AvagadroN], 0, 100, Points, PlayerStats[PlayerHealth])
 	else:#40% chance 
 		return 0 
 
@@ -653,9 +640,9 @@ def itemDropper():
 	#itemDropper()
 	#input()
 #Rooms 1-13
-PlayerHealth -= monsterGen(Points)
+PlayerStats[PlayerHealth] -= monsterGen(Points)
 
-while choice != "quit" and PlayerHealth > 0:
+while choice != "quit" and PlayerStats[PlayerHealth] > 0:
 	if inventory == "exfil flare" and "captured scientist" and "wonder weapon" and "intel documents":
 		canleave=True
 	#Room 1 (The starter Room)
@@ -675,7 +662,7 @@ while choice != "quit" and PlayerHealth > 0:
 			print("I do not understand that " )
 	#Room 2 ( The Vehicle bay) 
 	elif room == 2:
-		PlayerHealth = monsterGen(Points)
+		PlayerStats[PlayerHealth] = monsterGen(Points)
 		choice = input("You are in The vehicle bay. The sounds of engines ideling and the smell of oil flood you senses, You can go east, south, or west .")
 		if boxchance == room:
 			print("You found the mystery Box")
@@ -890,7 +877,7 @@ while choice != "quit" and PlayerHealth > 0:
 			
 #end of game loop 
 		# Need to add exfil requirnments and what items you exfil with
-	if PlayerHealth <=0:
+	if PlayerStats[PlayerHealth] <=0:
 		print(" You died, restart to try again")	
 	elif choice=="exfil":
 		print ("you made it out soilder, Good work ")
